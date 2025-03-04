@@ -1,0 +1,50 @@
+plugins {
+    id 'java'
+}
+
+group = 'fr.inserm.u1078.vacterl'
+version = '1.0'
+
+test {
+    useJUnitPlatform()
+}
+
+repositories {
+    ivy {
+        url 'https://lysine.univ-brest.fr/maven/'
+        patternLayout {
+            artifact 'artifact/[organisation]/[module]-[revision].[ext]'
+            ivy 'ivy/[organisation]/[module]/[revision]/ivy.xml'
+            m2compatible = true
+        }
+    }
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation group: 'junit', name: 'junit', version: '4.13.2'
+    implementation group: 'fr.inserm.u1078', name: 'MaokLib', version: '1.0.6'
+}
+
+tasks.register('Release', Jar) {
+    manifest {
+        attributes 'Main-Class': 'fr.inserm.u1078.vacterl.Main'
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    with jar
+}
+
+tasks.register('Deploy', Copy) {
+    from "build/libs"
+    into "build/libs"
+    include "/${rootProject.name}-${version}.jar"
+    rename { String fileName -> fileName.replace("-${version}", "") }
+}
+
+Deploy.dependsOn(Release)
+
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
+javadoc.options.encoding = 'UTF-8'
