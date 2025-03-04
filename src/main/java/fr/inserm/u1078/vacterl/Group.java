@@ -1,5 +1,7 @@
 package fr.inserm.u1078.vacterl;
 
+import fr.inserm.u1078.tludwig.maok.tools.Message;
+
 import java.util.ArrayList;
 
 public class Group {
@@ -18,10 +20,10 @@ public class Group {
   }
 
   public void add(Record r){
-    if(r.getStart() < this.start)
-      this.start = r.getStart();
-    if(r.getEnd() > this.end)
-      this.end = r.getEnd();
+    if(r.getContig() != this.contig)
+      Message.die("Uh Oh something went wrong, Group contig and Record contig are different, can't merge");
+    this.start = Math.min(this.start, r.getStart());
+    this.end   = Math.max(this.end,   r.getEnd());
     this.records.add(r);
   }
 
@@ -42,7 +44,7 @@ public class Group {
       return false;
     if(this.getEnd() < r.getStart())
       return false;
-    if(this.getStart() > r.getEnd())
+    if(r.getEnd() < this.getStart())
       return false;
 
     return true;

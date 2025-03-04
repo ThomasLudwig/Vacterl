@@ -52,10 +52,10 @@ public class Main{
    * Prints Command line usage
    */
   private static void usage(){
-    Message.die("Usage : \n" +
+    Message.fatal("Usage : \n" +
         "java -jar <this.file.jar> percent percentEnzyme directory\n" +
         "<double> percentBNG: max value for Present_in_%_of_BNG_control_samples (Line is dropped otherwise)\n" +
         "<double> percentBNGEnzyme: max value for Present_in_%_of_BNG_control_samples_with_the_same_enzyme (Line is dropped otherwise)\n" +
-        "<String> directory: The directory containing the "+SMAP.EXT+" files");
+        "<String> directory: The directory containing the "+SMAP.EXT+" files", true);
   }
 }

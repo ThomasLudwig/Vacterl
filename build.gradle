@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'fr.inserm.u1078.vacterl'
-version = '1.0'
+version = '1.0.1'
 
 test {
     useJUnitPlatform()
@@ -23,7 +23,7 @@ repositories {
 
 dependencies {
     testImplementation group: 'junit', name: 'junit', version: '4.13.2'
-    implementation group: 'fr.inserm.u1078', name: 'MaokLib', version: '1.0.6'
+    implementation group: 'fr.inserm.u1078', name: 'MaokLib', version: '1.0.7'
 }
 
 tasks.register('Release', Jar) {

@@ -24,12 +24,12 @@ public class Analyzer {
     this.smaps = new ArrayList<>();
     final File dir = new File(directory);
     if(!dir.exists()) {
-      Message.die("Can't find directory [" + directory + "]");
+      Message.fatal("Can't find directory [" + directory + "]", true);
       return;
     }
     File[] files = dir.listFiles();
     if(files == null) {
-      Message.die("Directory [" + directory + "] is empty");
+      Message.fatal("[" + directory + "] is not a directory", true);
       return;
     }
 
@@ -45,7 +45,7 @@ public class Analyzer {
         }
       }
     if(this.smaps.isEmpty())
-      Message.die("No "+SMAP.EXT+" files where found in the directory ["+directory+"]");
+      Message.fatal("No "+SMAP.EXT+" files where found in the directory ["+directory+"]", true);
   }
 
   /**
@@ -56,6 +56,7 @@ public class Analyzer {
    */
   public ArrayList<Group> getOverlapping(final double percentBNG, final double percentBNGEnzyme){
     //The list is always sorted (Record is comparable on Contig,start,end)
+    Message.info("Looking for overlapping regions percentBNG["+percentBNG+"] percentBNGEnzyme["+percentBNGEnzyme+"]");
     final SortedList<Record> sorted = new SortedList<>(new ArrayList<Record>(), SortedList.Strategy.ADD_INSERT_SORT);
     //Adding all the records from all the .smap files
     for(SMAP smap : smaps)
@@ -69,22 +70,24 @@ public class Analyzer {
     //records processed so far
     int processed = 0;
 
-
-    Message.info("Building groups");
     final ArrayList<Group> groups = new ArrayList<>();
+    //here the records are sorted, so we only need to test if the Current record overlaps the last one
+    Group last = null;
+
+    Message.info("Building groups from "+sorted.size()+" records");
     for(Record record : sorted){
       //Add record to
       //1. the first group
       //2. an overlapping group
       //3. a new group
-      if(groups.isEmpty())
-        groups.add(new Group(record));
-      else {
-        final Group last = groups.get(groups.size() - 1);
+
+      if(last == null){
+        groups.add(last  = new Group(record));
+      } else {
         if(last.overlaps(record))
           last.add(record);
         else
-          groups.add(new Group(record));
+          groups.add(last  = new Group(record));
       }
       processed++;
       if(processed%step == 0)
