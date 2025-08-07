@@ -57,7 +57,7 @@ public class Analyzer {
   public ArrayList<Group> getOverlapping(final double percentBNG, final double percentBNGEnzyme){
     //The list is always sorted (Record is comparable on Contig,start,end)
     Message.info("Looking for overlapping regions percentBNG["+percentBNG+"] percentBNGEnzyme["+percentBNGEnzyme+"]");
-    final SortedList<Record> sorted = new SortedList<>(new ArrayList<Record>(), SortedList.Strategy.ADD_INSERT_SORT);
+    final SortedList<Record> sorted = new SortedList<>(new ArrayList<>(), SortedList.Strategy.ADD_INSERT_SORT);
     //Adding all the records from all the .smap files
     for(SMAP smap : smaps)
       sorted.addAll(smap.getRecords(percentBNG, percentBNGEnzyme));
